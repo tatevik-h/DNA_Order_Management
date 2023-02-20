@@ -9,7 +9,7 @@ class DNASynthesisOrderViewTestCase(TestCase):
     def setUp(self):
         self.url = reverse('dna_synthesis_order')
         self.user = User.objects.create_user(email='testuser@example.com', password='testpass')
-        self.client.login(username='testuser', password='testpass')
+        self.client.login(email='testuser@example.com', password='testpass')
 
     def test_get_request(self):
         response = self.client.get(self.url)
@@ -29,7 +29,7 @@ class DNASynthesisResultViewTestCase(TestCase):
         self.user = User.objects.create_user(email='testuser@example.com', password='testpass')
         self.order = DNASynthesisOrder.objects.create(user=self.user, gene_sequence='ATCG', valid_gene_sequences='ATCG', invalid_gene_sequences='')
         self.url = reverse('dna_synthesis_result', kwargs={'order_id': self.order.id})
-        self.client.login(username='testuser', password='testpass')
+        self.client.login(email='testuser@example.com', password='testpass')
 
     def test_get_request(self):
         response = self.client.get(self.url)
