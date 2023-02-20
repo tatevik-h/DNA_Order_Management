@@ -3,9 +3,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.authentication import JWTAuthentication
+
 from .models import User
 from .serializers import UserSerializer, CustomTokenObtainPairSerializer
+
 
 class SignupView(APIView):
     permission_classes = (AllowAny,)
@@ -20,8 +21,10 @@ class SignupView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
 
 class UserDetailView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -39,6 +42,7 @@ class UserDetailView(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserDeactivateView(APIView):
     permission_classes = (IsAuthenticated,)

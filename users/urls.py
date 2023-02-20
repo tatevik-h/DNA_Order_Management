@@ -8,4 +8,3 @@ urlpatterns = [
     path('users/<int:pk>/', UserDetailView.as_view(), name='user_detail'),
     path('users/<int:pk>/deactivate/', UserDeactivateView.as_view(), name='user_deactivate'),
 ]
-

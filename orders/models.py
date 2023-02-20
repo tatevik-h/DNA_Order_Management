@@ -1,5 +1,7 @@
 from django.db import models
+
 from users.models import User, Organization
+
 
 class RegularDNAProduct(models.Model):
     name = models.CharField(max_length=255)

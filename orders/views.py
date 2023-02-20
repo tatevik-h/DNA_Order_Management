@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.shortcuts import render
+
 from .forms import GeneSequenceForm
 from .models import DNASynthesisOrder
 
