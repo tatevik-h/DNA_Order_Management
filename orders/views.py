@@ -1,10 +1,13 @@
 from django.views import View
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from .forms import GeneSequenceForm
 from .models import DNASynthesisOrder
 
 
+@method_decorator(login_required, name='dispatch')
 class DNASynthesisOrderView(View):
     def get(self, request):
         form = GeneSequenceForm()
@@ -27,6 +30,7 @@ class DNASynthesisOrderView(View):
         return render(request, 'dna_synthesis_order.html', context)
 
 
+@method_decorator(login_required, name='dispatch')
 class DNASynthesisResultView(View):
     def get(self, request, order_id):
         # Retrieve the order
