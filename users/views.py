@@ -11,7 +11,8 @@ from .serializers import UserSerializer, CustomTokenObtainPairSerializer
 class SignupView(APIView):
     permission_classes = (AllowAny,)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()

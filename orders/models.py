@@ -16,7 +16,7 @@ class DNASynthesisOrder(models.Model):
     gene_sequence = models.JSONField()
     status = models.CharField(
         max_length=20,
-        choices=[('complete', 'Complete'),('incomplete', 'Incomplete')],
+        choices=[('complete', 'Complete'), ('incomplete', 'Incomplete')],
         default='incomplete'
     )
     valid_gene_sequences = models.CharField(max_length=255)

@@ -1,3 +1,7 @@
 djangorestframework
 djangorestframework-simplejwt
 pytest
+celery
+redis
+django-celery-results
+django_celery_beat
