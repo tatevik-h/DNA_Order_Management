@@ -1,5 +1,37 @@
-<form method="POST">
+{% block content %}
+  <h1>DNASynthesis Orders</h1>
+
+  <a href="{% url 'signup' %}">Logout</a>
+
+  <hr>
+
+  <h3>Place a New Order</h3>
+  <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
+    <button type="submit">Submit Order</button>
+  </form>
+
+  <hr>
+
+  <h3>Previous Orders</h3>
+  {% if orders %}
+    <ul>
+      {% for order in orders %}
+        <li>{{ order.id }} - {{ order.gene_sequence }}</li>
+      {% endfor %}
+    </ul>
+
+    {% if orders.has_previous %}
+      <a href="?page={{ orders.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span class="current-page">{{ orders.number }}</span>
+
+    {% if orders.has_next %}
+      <a href="?page={{ orders.next_page_number }}">next</a>
+    {% endif %}
+  {% else %}
+    <p>No previous orders.</p>
+  {% endif %}
+{% endblock %}

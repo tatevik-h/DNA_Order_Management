@@ -2,6 +2,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.paginator import Paginator
 
 from .forms import GeneSequenceForm
 from .models import DNASynthesisOrder
@@ -10,8 +11,13 @@ from .models import DNASynthesisOrder
 @method_decorator(login_required, name='dispatch')
 class DNASynthesisOrderView(View):
     def get(self, request):
+        order_list = DNASynthesisOrder.objects.filter(user=request.user).order_by('-id')
+        paginator = Paginator(order_list, 10)  # show 10 orders per page
+        page = request.GET.get('page')
+        orders = paginator.get_page(page)
+
         form = GeneSequenceForm()
-        context = {'form': form}
+        context = {'form': form, 'orders': orders}
         return render(request, 'dna_synthesis_order.html', context)
 
     def post(self, request):
