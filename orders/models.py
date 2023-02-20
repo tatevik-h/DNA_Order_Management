@@ -10,10 +10,15 @@ class RegularDNAProduct(models.Model):
     is_restricted = models.BooleanField(default=False)
     restricted_to = models.ManyToManyField(Organization, blank=True)
 
+
 class DNASynthesisOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     gene_sequence = models.JSONField()
-    status = models.CharField(max_length=20, choices=[('complete', 'Complete'), ('incomplete', 'Incomplete')], default='incomplete')
+    status = models.CharField(
+        max_length=20,
+        choices=[('complete', 'Complete'),('incomplete', 'Incomplete')],
+        default='incomplete'
+    )
     valid_gene_sequences = models.CharField(max_length=255)
     invalid_gene_sequences = models.CharField(max_length=255)
 
