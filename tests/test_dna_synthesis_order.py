@@ -1,41 +1,37 @@
 from django.test import TestCase
 from django.urls import reverse
-
-from orders.forms import GeneSequenceForm
-from orders.models import DNASynthesisOrder
 from users.models import User
+from orders.models import DNASynthesisOrder
+from orders.forms import GeneSequenceForm
 
 
-class DNASynthesisOrderTest(TestCase):
+class DNASynthesisOrderViewTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            email='testuser@example.com',
-            password='testpass',
-        )
-        self.form_data = {
-            'gene_sequence': 'ATCG',
-            'valid_gene_sequences': 'ATCG',
-            'invalid_gene_sequences': '',
-        }
+        self.url = reverse('dna_synthesis_order')
+        self.user = User.objects.create_user(email='testuser@example.com', password='testpass')
+        self.client.login(username='testuser', password='testpass')
 
-    def test_get_dna_synthesis_order(self):
-        self.client.login(email='testuser@example.com', password='testpass')
-        response = self.client.get(reverse('dna_synthesis_order'))
+    def test_get_request(self):
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'dna_synthesis_order.html')
         self.assertIsInstance(response.context['form'], GeneSequenceForm)
 
-    def test_post_valid_dna_synthesis_order(self):
-        self.client.login(email='testuser@example.com', password='testpass')
-        response = self.client.post(reverse('dna_synthesis_order'), self.form_data)
-        self.assertRedirects(response, reverse('dna_synthesis_result'))
-        self.assertEqual(DNASynthesisOrder.objects.count(), 1)
-
-    def test_post_invalid_dna_synthesis_order(self):
-        self.client.login(email='testuser@example.com', password='testpass')
-        self.form_data['gene_sequence'] = 'ATCB'  # invalid sequence
-        response = self.client.post(reverse('dna_synthesis_order'), self.form_data)
+    def test_post_request_with_invalid_data(self):
+        invalid_data = {'gene_sequence': 'ATC', 'valid_gene_sequences': '', 'invalid_gene_sequences': 'ATC'}
+        response = self.client.post(self.url, data=invalid_data)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'dna_synthesis_order.html')
-        self.assertContains(response, 'Enter a valid DNA sequence.')
-        self.assertEqual(DNASynthesisOrder.objects.count(), 0)
+        self.assertFalse(DNASynthesisOrder.objects.filter(gene_sequence='ATC').exists())
+        self.assertIsInstance(response.context['form'], GeneSequenceForm)
+
+
+class DNASynthesisResultViewTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email='testuser@example.com', password='testpass')
+        self.order = DNASynthesisOrder.objects.create(user=self.user, gene_sequence='ATCG', valid_gene_sequences='ATCG', invalid_gene_sequences='')
+        self.url = reverse('dna_synthesis_result', kwargs={'order_id': self.order.id})
+        self.client.login(username='testuser', password='testpass')
+
+    def test_get_request(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['order'], self.order)

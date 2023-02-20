@@ -14,5 +14,8 @@ class DNASynthesisOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     gene_sequence = models.JSONField()
     status = models.CharField(max_length=20, choices=[('complete', 'Complete'), ('incomplete', 'Incomplete')], default='incomplete')
-    valid_gene_sequences = models.IntegerField(default=0)
-    invalid_gene_sequences = models.IntegerField(default=0)
+    valid_gene_sequences = models.CharField(max_length=255)
+    invalid_gene_sequences = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"DNA Synthesis Order {self.id}"

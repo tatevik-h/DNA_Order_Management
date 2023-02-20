@@ -1,0 +1,12 @@
+<h2>Gene Scoring Result:</h2>
+<p>Status: {{ order.status }}</p>
+{% if order.status == "completed" %}
+<p>Total cost: ${{ order.total_cost }}</p>
+<p>Estimated time of delivery: {{ order.estimated_delivery_time }}</p>
+<p>Gene sequences:</p>
+<ul>
+{% for gene_sequence in order.gene_sequences %}
+<li>{{ gene_sequence }}</li>
+{% endfor %}
+</ul>
+{% endif %}

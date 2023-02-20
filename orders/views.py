@@ -1,11 +1,17 @@
-from django.shortcuts import render
+from django.views import View
+from django.shortcuts import render, redirect
 
 from .forms import GeneSequenceForm
 from .models import DNASynthesisOrder
 
 
-def dna_synthesis_order(request):
-    if request.method == 'POST':
+class DNASynthesisOrderView(View):
+    def get(self, request):
+        form = GeneSequenceForm()
+        context = {'form': form}
+        return render(request, 'dna_synthesis_order.html', context)
+
+    def post(self, request):
         form = GeneSequenceForm(request.POST)
         if form.is_valid():
             # Save the order
@@ -15,10 +21,16 @@ def dna_synthesis_order(request):
             order.save()
 
             # Show the result
-            context = {'order': order}
-            return render(request, 'dna_synthesis_result.html', context)
-    else:
-        form = GeneSequenceForm()
+            return redirect('dna_synthesis_result', order_id=order.id)
 
-    context = {'form': form}
-    return render(request, 'dna_synthesis_order.html', context)
+        context = {'form': form}
+        return render(request, 'dna_synthesis_order.html', context)
+
+
+class DNASynthesisResultView(View):
+    def get(self, request, order_id):
+        # Retrieve the order
+        order = DNASynthesisOrder.objects.get(id=order_id)
+
+        context = {'order': order}
+        return render(request, 'dna_synthesis_result.html', context)
